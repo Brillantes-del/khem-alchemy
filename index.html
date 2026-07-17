@@ -1,5 +1,6 @@
+
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en" class="scroll-smooth dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,6 +13,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
+      darkMode: 'class',
       theme: {
         extend: {
           fontFamily: {
@@ -29,26 +31,31 @@
   </script>
   <style>
     .gold-glow {
-      text-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+      text-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
     }
     .grid-bg {
       background-size: 30px 30px;
       background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.012) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(255, 255, 255, 0.012) 1px, transparent 1px);
+        linear-gradient(to right, rgba(120, 120, 120, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(120, 120, 120, 0.02) 1px, transparent 1px);
+    }
+    .dark .grid-bg {
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-obsidian text-neutral-200 font-sans min-h-screen relative overflow-x-hidden selection:bg-egyptianGold selection:text-black">
+<body class="bg-stone-50 text-neutral-800 dark:bg-obsidian dark:text-neutral-200 font-sans min-h-screen relative overflow-x-hidden transition-colors duration-300 selection:bg-egyptianGold selection:text-black">
 
   <!-- Background Layer -->
   <div class="absolute inset-0 grid-bg pointer-events-none z-0"></div>
-  <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 sm:w-[500px] h-72 sm:h-[500px] bg-egyptianGold/5 rounded-full blur-[80px] sm:blur-[120px] pointer-events-none z-0"></div>
+  <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 sm:w-[500px] h-72 sm:h-[500px] bg-egyptianGold/10 dark:bg-egyptianGold/5 rounded-full blur-[80px] sm:blur-[120px] pointer-events-none z-0"></div>
 
   <!-- Main Navigation Header -->
-  <header class="fixed top-0 left-0 right-0 z-40 border-b border-white/5 backdrop-blur-md bg-obsidian/60">
+  <header class="fixed top-0 left-0 right-0 z-40 border-b border-neutral-300/50 dark:border-white/5 backdrop-blur-md bg-stone-50/80 dark:bg-obsidian/80">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between gap-4">
       
       <!-- Brand Logo -->
@@ -58,20 +65,28 @@
           <circle cx="50" cy="55" r="12" stroke="currentColor" stroke-width="3"/>
           <line x1="50" y1="15" x2="50" y2="85" stroke="currentColor" stroke-width="2" stroke-dasharray="4 4"/>
         </svg>
-        <span class="font-serif tracking-[0.15em] sm:tracking-[0.25em] text-base sm:text-lg font-bold text-white">KHEM</span>
+        <span class="font-serif tracking-[0.15em] sm:tracking-[0.25em] text-base sm:text-lg font-bold text-neutral-900 dark:text-white">KHEM</span>
       </div>
       
       <!-- Center Links (Desktop only) -->
-      <nav class="hidden lg:flex space-x-8 xl:space-x-10 text-xs tracking-[0.2em] uppercase font-medium shrink-0">
+      <nav class="hidden lg:flex space-x-8 xl:space-x-10 text-xs tracking-[0.2em] uppercase font-medium shrink-0 text-neutral-600 dark:text-neutral-300">
         <a href="#origin" class="hover:text-egyptianGold transition duration-300">The Origin</a>
         <a href="#artifacts" class="hover:text-egyptianGold transition duration-300">Artifacts</a>
         <a href="#preservation" class="hover:text-egyptianGold transition duration-300">Preservation</a>
         <a href="#immortality" class="hover:text-egyptianGold transition duration-300">Immortality</a>
       </nav>
 
-      <!-- Action Button -->
-      <div class="shrink-0">
-        <button onclick="toggleChamber(true)" class="border border-egyptianGold/30 bg-egyptianGold/5 hover:bg-egyptianGold hover:text-black text-egyptianGold text-[10px] sm:text-xs tracking-[0.1em] sm:tracking-[0.15em] uppercase font-semibold px-3 py-2 sm:px-5 sm:py-2.5 rounded transition duration-300">
+      <!-- Action Area: Theme Toggle + Chamber Link -->
+      <div class="flex items-center space-x-3 shrink-0">
+        <!-- White / Theme Mode Button -->
+        <button onclick="toggleTheme()" class="p-2 border border-neutral-300 dark:border-white/10 rounded hover:bg-neutral-200/50 dark:hover:bg-white/5 transition duration-300 text-neutral-700 dark:text-neutral-300" aria-label="Toggle Theme Mode">
+          <!-- Moon Icon (Visible in Light Mode) -->
+          <svg id="themeIconMoon" class="w-4 h-4 block dark:hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9 9 0 0021.03 15.74c-.202-.02-.408-.03-.618-.03z"></path></svg>
+          <!-- Sun Icon (Visible in Dark Mode) -->
+          <svg id="themeIconSun" class="w-4 h-4 hidden dark:block" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        </button>
+
+        <button onclick="toggleChamber(true)" class="border border-egyptianGold/40 bg-egyptianGold/5 hover:bg-egyptianGold hover:text-black text-egyptianGold text-[10px] sm:text-xs tracking-[0.1em] sm:tracking-[0.15em] uppercase font-semibold px-3 py-2 sm:px-5 sm:py-2.5 rounded transition duration-300">
           Enter Chamber
         </button>
       </div>
@@ -80,11 +95,11 @@
   </header>
 
   <!-- Fullscreen Chamber Entry Overlay (Mobile Scroll Protected) -->
-  <div id="chamberOverlay" class="fixed inset-0 z-50 bg-neutral-950/98 backdrop-blur-2xl flex flex-col justify-start lg:justify-center items-center opacity-0 pointer-events-none transition-all duration-500 transform scale-105 overflow-y-auto no-scrollbar">
+  <div id="chamberOverlay" class="fixed inset-0 z-50 bg-stone-100/98 dark:bg-neutral-950/98 backdrop-blur-2xl flex flex-col justify-start lg:justify-center items-center opacity-0 pointer-events-none transition-all duration-500 transform scale-105 overflow-y-auto no-scrollbar">
     
     <!-- Close Chamber Button -->
     <div class="w-full max-w-5xl px-6 pt-6 pb-2 lg:py-0 flex justify-end shrink-0">
-      <button onclick="toggleChamber(false)" class="text-neutral-500 hover:text-white font-mono text-xs sm:text-sm tracking-widest uppercase transition duration-300 flex items-center space-x-2 py-2">
+      <button onclick="toggleChamber(false)" class="text-neutral-500 hover:text-neutral-900 dark:hover:text-white font-mono text-xs sm:text-sm tracking-widest uppercase transition duration-300 flex items-center space-x-2 py-2">
         <span>Exit Portal</span>
         <span class="text-lg">&times;</span>
       </button>
@@ -96,63 +111,63 @@
       <div class="lg:col-span-5 space-y-4 sm:space-y-6">
         <div class="space-y-2 text-center lg:text-left">
           <span class="text-[9px] sm:text-[10px] font-mono text-egyptianGold tracking-[0.3em] uppercase block">SYSTEM INTERFACE MAP</span>
-          <h2 class="font-serif text-2xl sm:text-3xl text-white tracking-wide uppercase">The Chamber Codex</h2>
-          <p class="text-xs text-neutral-400 font-light leading-relaxed max-w-md mx-auto lg:mx-0">
+          <h2 class="font-serif text-2xl sm:text-3xl text-neutral-900 dark:text-white tracking-wide uppercase">The Chamber Codex</h2>
+          <p class="text-xs text-neutral-600 dark:text-neutral-400 font-light leading-relaxed max-w-md mx-auto lg:mx-0">
             Direct spatial access nodes mapped across active archival coordinates. Select an anchor domain to jump immediately.
           </p>
         </div>
 
         <!-- Master Link Navigation Codex Stack -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
-          <a href="#origin" onclick="toggleChamber(false)" class="group flex items-center justify-between p-3 sm:p-4 border border-white/5 bg-white/[0.01] rounded hover:border-egyptianGold/40 transition duration-300">
+          <a href="#origin" onclick="toggleChamber(false)" class="group flex items-center justify-between p-3 sm:p-4 border border-neutral-300 dark:border-white/5 bg-white dark:bg-white/[0.01] rounded hover:border-egyptianGold/40 transition duration-300 shadow-sm dark:shadow-none">
             <div class="space-y-0.5">
-              <span class="text-[9px] font-mono text-neutral-500 block">SEC // 01</span>
-              <span class="font-serif text-xs sm:text-sm text-neutral-200 group-hover:text-white tracking-wide transition">The Origin Threshold</span>
+              <span class="text-[9px] font-mono text-neutral-400 dark:text-neutral-500 block">SEC // 01</span>
+              <span class="font-serif text-xs sm:text-sm text-neutral-700 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-white tracking-wide transition">The Origin Threshold</span>
             </div>
-            <span class="text-neutral-600 group-hover:text-egyptianGold font-mono text-[10px] sm:text-xs transition duration-300">GO &rarr;</span>
+            <span class="text-neutral-400 dark:text-neutral-600 group-hover:text-egyptianGold font-mono text-[10px] sm:text-xs transition duration-300">GO &rarr;</span>
           </a>
 
-          <a href="#artifacts" onclick="toggleChamber(false)" class="group flex items-center justify-between p-3 sm:p-4 border border-white/5 bg-white/[0.01] rounded hover:border-egyptianGold/40 transition duration-300">
+          <a href="#artifacts" onclick="toggleChamber(false)" class="group flex items-center justify-between p-3 sm:p-4 border border-neutral-300 dark:border-white/5 bg-white dark:bg-white/[0.01] rounded hover:border-egyptianGold/40 transition duration-300 shadow-sm dark:shadow-none">
             <div class="space-y-0.5">
-              <span class="text-[9px] font-mono text-neutral-500 block">SEC // 02</span>
-              <span class="font-serif text-xs sm:text-sm text-neutral-200 group-hover:text-white tracking-wide transition">The Alchemical Relics</span>
+              <span class="text-[9px] font-mono text-neutral-400 dark:text-neutral-500 block">SEC // 02</span>
+              <span class="font-serif text-xs sm:text-sm text-neutral-700 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-white tracking-wide transition">The Alchemical Relics</span>
             </div>
-            <span class="text-neutral-600 group-hover:text-egyptianGold font-mono text-[10px] sm:text-xs transition duration-300">GO &rarr;</span>
+            <span class="text-neutral-400 dark:text-neutral-600 group-hover:text-egyptianGold font-mono text-[10px] sm:text-xs transition duration-300">GO &rarr;</span>
           </a>
 
-          <a href="#preservation" onclick="toggleChamber(false)" class="group flex items-center justify-between p-3 sm:p-4 border border-white/5 bg-white/[0.01] rounded hover:border-egyptianGold/40 transition duration-300">
+          <a href="#preservation" onclick="toggleChamber(false)" class="group flex items-center justify-between p-3 sm:p-4 border border-neutral-300 dark:border-white/5 bg-white dark:bg-white/[0.01] rounded hover:border-egyptianGold/40 transition duration-300 shadow-sm dark:shadow-none">
             <div class="space-y-0.5">
-              <span class="text-[9px] font-mono text-neutral-500 block">SEC // 03</span>
-              <span class="font-serif text-xs sm:text-sm text-neutral-200 group-hover:text-white tracking-wide transition">Preservation Matrix</span>
+              <span class="text-[9px] font-mono text-neutral-400 dark:text-neutral-500 block">SEC // 03</span>
+              <span class="font-serif text-xs sm:text-sm text-neutral-700 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-white tracking-wide transition">Preservation Matrix</span>
             </div>
-            <span class="text-neutral-600 group-hover:text-egyptianGold font-mono text-[10px] sm:text-xs transition duration-300">GO &rarr;</span>
+            <span class="text-neutral-400 dark:text-neutral-600 group-hover:text-egyptianGold font-mono text-[10px] sm:text-xs transition duration-300">GO &rarr;</span>
           </a>
 
-          <a href="#immortality" onclick="toggleChamber(false)" class="group flex items-center justify-between p-3 sm:p-4 border border-white/5 bg-white/[0.01] rounded hover:border-egyptianGold/40 transition duration-300">
+          <a href="#immortality" onclick="toggleChamber(false)" class="group flex items-center justify-between p-3 sm:p-4 border border-neutral-300 dark:border-white/5 bg-white dark:bg-white/[0.01] rounded hover:border-egyptianGold/40 transition duration-300 shadow-sm dark:shadow-none">
             <div class="space-y-0.5">
-              <span class="text-[9px] font-mono text-neutral-500 block">SEC // 04</span>
-              <span class="font-serif text-xs sm:text-sm text-neutral-200 group-hover:text-white tracking-wide transition">Immortality Synthesis</span>
+              <span class="text-[9px] font-mono text-neutral-400 dark:text-neutral-500 block">SEC // 04</span>
+              <span class="font-serif text-xs sm:text-sm text-neutral-700 dark:text-neutral-200 group-hover:text-neutral-900 dark:group-hover:text-white tracking-wide transition">Immortality Synthesis</span>
             </div>
-            <span class="text-neutral-600 group-hover:text-egyptianGold font-mono text-[10px] sm:text-xs transition duration-300">GO &rarr;</span>
+            <span class="text-neutral-400 dark:text-neutral-600 group-hover:text-egyptianGold font-mono text-[10px] sm:text-xs transition duration-300">GO &rarr;</span>
           </a>
         </div>
       </div>
 
       <!-- Right Column: Interactive Temporal Slider & Status Matrix -->
-      <div class="lg:col-span-7 border border-white/5 bg-white/[0.02] p-5 sm:p-6 lg:p-8 rounded-lg flex flex-col justify-between space-y-6">
+      <div class="lg:col-span-7 border border-neutral-300 dark:border-white/5 bg-white dark:bg-white/[0.02] p-5 sm:p-6 lg:p-8 rounded-lg flex flex-col justify-between space-y-6 shadow-md dark:shadow-none">
         
         <!-- Interactive Temporal Chronology -->
         <div class="space-y-4">
           <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-            <label class="text-[10px] text-neutral-400 font-mono uppercase tracking-wider block">Temporal Era Calibration</label>
+            <label class="text-[10px] text-neutral-500 dark:text-neutral-400 font-mono uppercase tracking-wider block">Temporal Era Calibration</label>
             <span id="eraIndicator" class="text-[11px] font-mono text-egyptianGold bg-egyptianGold/10 px-2 py-0.5 rounded self-start sm:self-auto">4000 BC : Dawn Era</span>
           </div>
           
-          <input id="eraSlider" type="range" min="1" max="4" value="1" oninput="updateEraMetrics(this.value)" class="w-full accent-egyptianGold bg-neutral-800 h-1.5 rounded cursor-pointer py-2">
+          <input id="eraSlider" type="range" min="1" max="4" value="1" oninput="updateEraMetrics(this.value)" class="w-full accent-egyptianGold bg-neutral-200 dark:bg-neutral-800 h-1.5 rounded cursor-pointer py-2">
           
-          <div class="bg-black/40 border border-white/5 rounded p-4 font-mono text-xs min-h-[100px] flex flex-col justify-start">
-            <div class="text-neutral-500 mb-1">&gt;_ Era Documentation Segment:</div>
-            <p id="eraDescription" class="text-neutral-300 leading-relaxed text-[11px] sm:text-xs">
+          <div class="bg-neutral-100 dark:bg-black/40 border border-neutral-300/60 dark:border-white/5 rounded p-4 font-mono text-xs min-h-[100px] flex flex-col justify-start">
+            <div class="text-neutral-400 mb-1">&gt;_ Era Documentation Segment:</div>
+            <p id="eraDescription" class="text-neutral-700 dark:text-neutral-300 leading-relaxed text-[11px] sm:text-xs">
               Early roots of Khem civilization solidify. Emergence of primitive mineral refinement and foundational organic preservation compounds near the Nile delta basin.
             </p>
           </div>
@@ -160,20 +175,20 @@
 
         <!-- Simulated Active Matrix Readout -->
         <div class="space-y-3">
-          <span class="text-[10px] text-neutral-500 font-mono uppercase tracking-wider block">Live Node Core Parameters</span>
+          <span class="text-[10px] text-neutral-400 dark:text-neutral-500 font-mono uppercase tracking-wider block">Live Node Core Parameters</span>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div class="border border-white/5 bg-black/20 p-3 rounded font-mono flex justify-between sm:block">
-              <span class="text-[9px] text-neutral-500 uppercase block">Cryptographic Key</span>
-              <span class="text-xs text-white">HERM-4000-KHEM</span>
+            <div class="border border-neutral-200 dark:border-white/5 bg-neutral-50 dark:bg-black/20 p-3 rounded font-mono flex justify-between sm:block">
+              <span class="text-[9px] text-neutral-400 dark:text-neutral-500 uppercase block">Cryptographic Key</span>
+              <span class="text-xs text-neutral-900 dark:text-white">HERM-4000-KHEM</span>
             </div>
-            <div class="border border-white/5 bg-black/20 p-3 rounded font-mono flex justify-between sm:block">
-              <span class="text-[9px] text-neutral-500 uppercase block">Transmutation Array</span>
+            <div class="border border-neutral-200 dark:border-white/5 bg-neutral-50 dark:bg-black/20 p-3 rounded font-mono flex justify-between sm:block">
+              <span class="text-[9px] text-neutral-400 dark:text-neutral-500 uppercase block">Transmutation Array</span>
               <span class="text-xs text-mummyCopper">Active // Stable</span>
             </div>
           </div>
         </div>
 
-        <button onclick="executeChamberWarp()" class="w-full min-h-[48px] sm:min-h-0 py-4 bg-egyptianGold text-black font-semibold text-xs tracking-[0.2em] uppercase rounded hover:bg-white hover:text-black transition duration-300">
+        <button onclick="executeChamberWarp()" class="w-full min-h-[48px] sm:min-h-0 py-4 bg-egyptianGold text-black font-semibold text-xs tracking-[0.2em] uppercase rounded hover:bg-neutral-900 dark:hover:bg-white hover:text-white dark:hover:text-black transition duration-300">
           Sync Codex & Initialize Protocol
         </button>
       </div>
@@ -181,53 +196,53 @@
     </div>
   </div>
 
-  <!-- Hero Section -->
+  <!-- Hero Section (Responsive Architecture) -->
   <section class="relative min-h-screen flex items-center z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-16">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 w-full items-center">
       
-      <!-- Text Copy -->
-      <div class="lg:col-span-7 flex flex-col space-y-6 text-center lg:text-left order-2 lg:order-1">
+      <!-- Copy Details (Top on Mobile, Left on Desktop) -->
+      <div class="lg:col-span-7 flex flex-col space-y-6 text-center lg:text-left order-1">
         <div class="flex items-center justify-center lg:justify-start space-x-2">
           <span class="h-[1px] w-8 bg-egyptianGold/50"></span>
           <span class="text-[10px] sm:text-xs uppercase tracking-[0.3em] text-egyptianGold font-semibold">The Sacred Science</span>
         </div>
         
-        <h1 class="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-normal leading-[1.1] tracking-tight text-white gold-glow">
+        <h1 class="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-normal leading-[1.1] tracking-tight text-neutral-900 dark:text-white gold-glow">
           From Black Earth To <span class="italic font-light block mt-1 text-egyptianGold">Immortality</span>
         </h1>
         
-        <p class="max-w-xl text-neutral-400 text-xs sm:text-sm md:text-base leading-relaxed font-light mx-auto lg:mx-0">
+        <p class="max-w-xl text-neutral-600 dark:text-neutral-400 text-xs sm:text-sm md:text-base leading-relaxed font-light mx-auto lg:mx-0">
           In the heart of ancient Khem (Egypt), the chemical mastery of mummification birthed the forerunner of science. Discover the golden thread tying mortal preservation to eternal transformation.
         </p>
 
         <div class="flex flex-col sm:flex-row justify-center lg:justify-start items-center gap-4 pt-2">
-          <a href="#origin" class="w-full sm:w-auto text-center px-8 py-4 bg-white text-black hover:bg-egyptianGold hover:text-black transition duration-300 font-medium text-xs tracking-[0.2em] uppercase rounded shadow-lg">
+          <a href="#origin" class="w-full sm:w-auto text-center px-8 py-4 bg-neutral-900 dark:bg-white text-white dark:text-black hover:bg-egyptianGold dark:hover:bg-egyptianGold hover:text-black transition duration-300 font-medium text-xs tracking-[0.2em] uppercase rounded shadow-lg">
             Explore Origin
           </a>
         </div>
 
-        <div class="grid grid-cols-3 gap-4 pt-8 border-t border-white/5 text-left max-w-lg mx-auto lg:mx-0">
+        <div class="grid grid-cols-3 gap-4 pt-8 border-t border-neutral-300 dark:border-white/5 text-left max-w-lg mx-auto lg:mx-0 w-full">
           <div>
-            <div class="font-serif text-base sm:text-xl lg:text-2xl text-white">4000 BC</div>
-            <div class="text-[9px] sm:text-[10px] tracking-wider uppercase text-neutral-500 mt-1">Origins of Khem</div>
+            <div class="font-serif text-base sm:text-xl lg:text-2xl text-neutral-900 dark:text-white">4000 BC</div>
+            <div class="text-[9px] sm:text-[10px] tracking-wider uppercase text-neutral-500 dark:text-neutral-500 mt-1">Origins of Khem</div>
           </div>
           <div>
-            <div class="font-serif text-base sm:text-xl lg:text-2xl text-white">70 Days</div>
-            <div class="text-[9px] sm:text-[10px] tracking-wider uppercase text-neutral-500 mt-1">Ritual Cure</div>
+            <div class="font-serif text-base sm:text-xl lg:text-2xl text-neutral-900 dark:text-white">70 Days</div>
+            <div class="text-[9px] sm:text-[10px] tracking-wider uppercase text-neutral-500 dark:text-neutral-500 mt-1">Ritual Cure</div>
           </div>
           <div>
-            <div class="font-serif text-base sm:text-xl lg:text-2xl text-white">Chrysopoeia</div>
-            <div class="text-[9px] sm:text-[10px] tracking-wider uppercase text-neutral-500 mt-1">Goal of Gold</div>
+            <div class="font-serif text-base sm:text-xl lg:text-2xl text-neutral-900 dark:text-white">Chrysopoeia</div>
+            <div class="text-[9px] sm:text-[10px] tracking-wider uppercase text-neutral-500 dark:text-neutral-500 mt-1">Goal of Gold</div>
           </div>
         </div>
       </div>
 
-      <!-- Canvas Interaction Column -->
-      <div class="lg:col-span-5 flex justify-center items-center relative aspect-square order-1 lg:order-2 w-full max-w-[320px] sm:max-w-[400px] mx-auto">
+      <!-- Interactive Canvas Column (Bottom on Mobile, Right on Desktop) -->
+      <div class="lg:col-span-5 flex justify-center items-center relative aspect-square order-2 w-full max-w-[260px] sm:max-w-[340px] mx-auto">
         <div class="relative w-full aspect-square flex items-center justify-center">
           <canvas id="sacredGeometry" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing"></canvas>
           <div class="absolute w-[90%] h-[90%] border border-egyptianGold/20 rounded-full animate-[spin_120s_linear_infinite] pointer-events-none"></div>
-          <div class="absolute w-[80%] h-[80%] border border-dashed border-white/5 rounded-full pointer-events-none"></div>
+          <div class="absolute w-[80%] h-[80%] border border-dashed border-neutral-300 dark:border-white/5 rounded-full pointer-events-none"></div>
         </div>
       </div>
 
@@ -235,101 +250,101 @@
   </section>
 
   <!-- Section 1: The Origin -->
-  <section id="origin" class="relative py-20 sm:py-32 border-t border-white/5 z-10 max-w-7xl mx-auto px-4 sm:px-6">
+  <section id="origin" class="relative py-20 sm:py-32 border-t border-neutral-300 dark:border-white/5 z-10 max-w-7xl mx-auto px-4 sm:px-6">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12">
       <div class="lg:col-span-4">
-        <span class="text-[10px] font-mono text-egyptianGold/60 tracking-widest block mb-2 sm:mb-3">01 // THE CRADLE</span>
-        <h2 class="font-serif text-2xl sm:text-4xl text-white tracking-wide uppercase">The Center of Khem</h2>
+        <span class="text-[10px] font-mono text-egyptianGold tracking-widest block mb-2 sm:mb-3">01 // THE CRADLE</span>
+        <h2 class="font-serif text-2xl sm:text-4xl text-neutral-900 dark:text-white tracking-wide uppercase">The Center of Khem</h2>
       </div>
       <div class="lg:col-span-8">
-        <p class="text-sm sm:text-lg text-neutral-300 font-light leading-relaxed">
-          Before it was called "Alchemy" by Arab scholars or "Chemia" by the Greeks, it was known simply as the practical wisdom of <strong class="text-white font-normal">Khem</strong>—the indigenous name for Egypt, referring to the rich, fertile black soil left behind by the Nile.
+        <p class="text-sm sm:text-lg text-neutral-600 dark:text-neutral-300 font-light leading-relaxed">
+          Before it was called "Alchemy" by Arab scholars or "Chemia" by the Greeks, it was known simply as the practical wisdom of <strong class="text-neutral-900 dark:text-white font-normal">Khem</strong>—the indigenous name for Egypt, referring to the rich, fertile black soil left behind by the Nile.
         </p>
       </div>
     </div>
   </section>
 
   <!-- Section 2: Explore Artifacts -->
-  <section id="artifacts" class="relative py-20 sm:py-32 border-t border-white/5 bg-white/[0.01] z-10">
+  <section id="artifacts" class="relative py-20 sm:py-32 border-t border-neutral-300 dark:border-white/5 bg-neutral-200/20 dark:bg-white/[0.01] z-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6">
       <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-12 sm:mb-16 gap-4">
         <div>
           <span class="text-[10px] font-mono text-egyptianGold tracking-widest block mb-2 sm:mb-3">02 // CABINET OF CURIOSITIES</span>
-          <h2 class="font-serif text-2xl sm:text-4xl text-white tracking-wide uppercase">The Alchemical Relics</h2>
+          <h2 class="font-serif text-2xl sm:text-4xl text-neutral-900 dark:text-white tracking-wide uppercase">The Alchemical Relics</h2>
         </div>
-        <p class="max-w-md text-xs sm:text-sm text-neutral-400 font-light leading-relaxed">
+        <p class="max-w-md text-xs sm:text-sm text-neutral-500 dark:text-neutral-400 font-light leading-relaxed">
           Physical anchors of ancient scientific progression. These tools and formulas bridged the gap between empirical observation and spiritual transcendence.
         </p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
         <!-- Relic 1 -->
-        <div class="border border-white/5 bg-obsidian rounded-lg overflow-hidden hover:border-egyptianGold/30 transition duration-500 group flex flex-col justify-between">
+        <div class="border border-neutral-300 dark:border-white/5 bg-white dark:bg-obsidian rounded-lg overflow-hidden hover:border-egyptianGold/40 dark:hover:border-egyptianGold/30 shadow-sm dark:shadow-none transition duration-500 group flex flex-col justify-between">
           <div class="p-6 sm:p-8 space-y-6">
             <div class="flex justify-between items-center">
-              <span class="text-[10px] font-mono text-neutral-500">RELIC 01 // TEXT</span>
+              <span class="text-[10px] font-mono text-neutral-400 dark:text-neutral-500">RELIC 01 // TEXT</span>
               <span class="text-[10px] font-mono text-egyptianGold border border-egyptianGold/20 px-2 py-0.5 rounded">HERMETIC</span>
             </div>
-            <div class="h-36 sm:h-48 flex items-center justify-center bg-white/[0.02] border border-white/5 rounded relative overflow-hidden">
+            <div class="h-36 sm:h-48 flex items-center justify-center bg-stone-50 dark:bg-white/[0.02] border border-neutral-200 dark:border-white/5 rounded relative overflow-hidden">
               <span class="text-egyptianGold/40 text-6xl sm:text-7xl font-serif select-none group-hover:scale-110 transition duration-500">𐠀</span>
             </div>
             <div>
-              <h3 class="font-serif text-lg sm:text-xl text-white mb-2">The Leyden Papyrus X</h3>
-              <p class="text-xs text-neutral-400 font-light leading-relaxed line-clamp-3">
+              <h3 class="font-serif text-lg sm:text-xl text-neutral-900 dark:text-white mb-2">The Leyden Papyrus X</h3>
+              <p class="text-xs text-neutral-600 dark:text-neutral-400 font-light leading-relaxed line-clamp-3">
                 Dating to c. 300 AD in Thebes, this priceless codex holds 111 authentic chemical recipes for purifying gold and testing mineral alloys.
               </p>
             </div>
           </div>
           <div class="px-6 pb-6 sm:px-8 sm:pb-8">
-            <button onclick="openModal('papyrus')" class="w-full text-center py-3 border border-white/10 hover:border-egyptianGold text-[10px] sm:text-xs tracking-widest uppercase rounded transition duration-300 min-h-[44px]">
+            <button onclick="openModal('papyrus')" class="w-full text-center py-3 border border-neutral-300 dark:border-white/10 hover:border-egyptianGold dark:hover:border-egyptianGold text-[10px] sm:text-xs tracking-widest uppercase rounded transition duration-300 min-h-[44px] text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white">
               Inspect Manuscript
             </button>
           </div>
         </div>
 
         <!-- Relic 2 -->
-        <div class="border border-white/5 bg-obsidian rounded-lg overflow-hidden hover:border-egyptianGold/30 transition duration-500 group flex flex-col justify-between">
+        <div class="border border-neutral-300 dark:border-white/5 bg-white dark:bg-obsidian rounded-lg overflow-hidden hover:border-egyptianGold/40 dark:hover:border-egyptianGold/30 shadow-sm dark:shadow-none transition duration-500 group flex flex-col justify-between">
           <div class="p-6 sm:p-8 space-y-6">
             <div class="flex justify-between items-center">
-              <span class="text-[10px] font-mono text-neutral-500">RELIC 02 // GEOMETRY</span>
+              <span class="text-[10px] font-mono text-neutral-400 dark:text-neutral-500">RELIC 02 // GEOMETRY</span>
               <span class="text-[10px] font-mono text-egyptianGold border border-egyptianGold/20 px-2 py-0.5 rounded">GOLD</span>
             </div>
-            <div class="h-36 sm:h-48 flex items-center justify-center bg-white/[0.02] border border-white/5 rounded relative overflow-hidden">
+            <div class="h-36 sm:h-48 flex items-center justify-center bg-stone-50 dark:bg-white/[0.02] border border-neutral-200 dark:border-white/5 rounded relative overflow-hidden">
               <span class="text-egyptianGold/40 text-6xl sm:text-7xl font-serif select-none group-hover:scale-110 transition duration-500">☉</span>
             </div>
             <div>
-              <h3 class="font-serif text-lg sm:text-xl text-white mb-2">The Ouroboros Symbol</h3>
-              <p class="text-xs text-neutral-400 font-light leading-relaxed line-clamp-3">
+              <h3 class="font-serif text-lg sm:text-xl text-neutral-900 dark:text-white mb-2">The Ouroboros Symbol</h3>
+              <p class="text-xs text-neutral-600 dark:text-neutral-400 font-light leading-relaxed line-clamp-3">
                 First appearing in Alexandria, this iconic serpent devouring its tail represents the fundamental chemical absolute: matter can never be destroyed, only transformed.
               </p>
             </div>
           </div>
           <div class="px-6 pb-6 sm:px-8 sm:pb-8">
-            <button onclick="openModal('ouroboros')" class="w-full text-center py-3 border border-white/10 hover:border-egyptianGold text-[10px] sm:text-xs tracking-widest uppercase rounded transition duration-300 min-h-[44px]">
+            <button onclick="openModal('ouroboros')" class="w-full text-center py-3 border border-neutral-300 dark:border-white/10 hover:border-egyptianGold dark:hover:border-egyptianGold text-[10px] sm:text-xs tracking-widest uppercase rounded transition duration-300 min-h-[44px] text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white">
               Inspect Diagram
             </button>
           </div>
         </div>
 
         <!-- Relic 3 -->
-        <div class="border border-white/5 bg-obsidian rounded-lg overflow-hidden hover:border-egyptianGold/30 transition duration-500 group flex flex-col justify-between">
+        <div class="border border-neutral-300 dark:border-white/5 bg-white dark:bg-obsidian rounded-lg overflow-hidden hover:border-egyptianGold/40 dark:hover:border-egyptianGold/30 shadow-sm dark:shadow-none transition duration-500 group flex flex-col justify-between">
           <div class="p-6 sm:p-8 space-y-6">
             <div class="flex justify-between items-center">
-              <span class="text-[10px] font-mono text-neutral-500">RELIC 03 // MATRICES</span>
+              <span class="text-[10px] font-mono text-neutral-400 dark:text-neutral-500">RELIC 03 // MATRICES</span>
               <span class="text-[10px] font-mono text-mummyCopper border border-mummyCopper/20 px-2 py-0.5 rounded">ESSENCE</span>
             </div>
-            <div class="h-36 sm:h-48 flex items-center justify-center bg-white/[0.02] border border-white/5 rounded relative overflow-hidden">
+            <div class="h-36 sm:h-48 flex items-center justify-center bg-stone-50 dark:bg-white/[0.02] border border-neutral-200 dark:border-white/5 rounded relative overflow-hidden">
               <span class="text-mummyCopper/40 text-6xl sm:text-7xl font-serif select-none group-hover:scale-110 transition duration-500">𓋴</span>
             </div>
             <div>
-              <h3 class="font-serif text-lg sm:text-xl text-white mb-2">The Mendesian Aluddel</h3>
-              <p class="text-xs text-neutral-400 font-light leading-relaxed line-clamp-3">
+              <h3 class="font-serif text-lg sm:text-xl text-neutral-900 dark:text-white mb-2">The Mendesian Aluddel</h3>
+              <p class="text-xs text-neutral-600 dark:text-neutral-400 font-light leading-relaxed line-clamp-3">
                 An early distillation vessel optimized in Lower Egypt to capture complex volatile oil vapors for spiritual preservation and ritual perfumes.
               </p>
             </div>
           </div>
           <div class="px-6 pb-6 sm:px-8 sm:pb-8">
-            <button onclick="openModal('mendesian')" class="w-full text-center py-3 border border-white/10 hover:border-mummyCopper text-[10px] sm:text-xs tracking-widest uppercase rounded transition duration-300 min-h-[44px]">
+            <button onclick="openModal('mendesian')" class="w-full text-center py-3 border border-neutral-300 dark:border-white/10 hover:border-mummyCopper dark:hover:border-mummyCopper text-[10px] sm:text-xs tracking-widest uppercase rounded transition duration-300 min-h-[44px] text-neutral-700 dark:text-neutral-300 hover:text-neutral-900 dark:hover:text-white">
               Inspect Instrument
             </button>
           </div>
@@ -339,14 +354,14 @@
   </section>
 
   <!-- Section 3: Preservation -->
-  <section id="preservation" class="relative py-20 sm:py-32 border-t border-white/5 z-10 max-w-7xl mx-auto px-4 sm:px-6">
+  <section id="preservation" class="relative py-20 sm:py-32 border-t border-neutral-300 dark:border-white/5 z-10 max-w-7xl mx-auto px-4 sm:px-6">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12">
       <div class="lg:col-span-4">
-        <span class="text-[10px] font-mono text-egyptianGold/60 tracking-widest block mb-2 sm:mb-3">03 // CHEMICAL MATRIX</span>
-        <h2 class="font-serif text-2xl sm:text-4xl text-white tracking-wide uppercase">Preservation</h2>
+        <span class="text-[10px] font-mono text-egyptianGold tracking-widest block mb-2 sm:mb-3">03 // CHEMICAL MATRIX</span>
+        <h2 class="font-serif text-2xl sm:text-4xl text-neutral-900 dark:text-white tracking-wide uppercase">Preservation</h2>
       </div>
       <div class="lg:col-span-8">
-        <p class="text-sm sm:text-lg text-neutral-300 font-light leading-relaxed">
+        <p class="text-sm sm:text-lg text-neutral-600 dark:text-neutral-300 font-light leading-relaxed">
           Through the sophisticated drying qualities of Natron salt mixtures and antibacterial properties of imported cedar resins, early operators engineered systemic structural conservation profiles designed to cheat organic breakdown indefinitely.
         </p>
       </div>
@@ -354,14 +369,14 @@
   </section>
 
   <!-- Section 4: Immortality -->
-  <section id="immortality" class="relative py-20 sm:py-32 border-t border-white/5 bg-white/[0.005] z-10 max-w-7xl mx-auto px-4 sm:px-6">
+  <section id="immortality" class="relative py-20 sm:py-32 border-t border-neutral-300 dark:border-white/5 bg-white/[0.005] z-10 max-w-7xl mx-auto px-4 sm:px-6">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-12">
       <div class="lg:col-span-4">
-        <span class="text-[10px] font-mono text-egyptianGold/60 tracking-widest block mb-2 sm:mb-3">04 // CHRYSOPOEIA</span>
-        <h2 class="font-serif text-2xl sm:text-4xl text-white tracking-wide uppercase">Immortality</h2>
+        <span class="text-[10px] font-mono text-egyptianGold tracking-widest block mb-2 sm:mb-3">04 // CHRYSOPOEIA</span>
+        <h2 class="font-serif text-2xl sm:text-4xl text-neutral-900 dark:text-white tracking-wide uppercase">Immortality</h2>
       </div>
       <div class="lg:col-span-8">
-        <p class="text-sm sm:text-lg text-neutral-300 font-light leading-relaxed">
+        <p class="text-sm sm:text-lg text-neutral-600 dark:text-neutral-300 font-light leading-relaxed">
           The ultimate physical horizon line. Material corruption was viewed merely as a temporary architectural misalignment. Transmuting base items into golden configurations became the ultimate destination of cosmic chemical science.
         </p>
       </div>
@@ -369,28 +384,28 @@
   </section>
 
   <!-- Interactive Lightbox Modal for Relics -->
-  <div id="artifactModal" class="fixed inset-0 bg-obsidian/90 backdrop-blur-md z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4 overflow-y-auto">
-    <div class="bg-neutral-950 border border-white/10 max-w-2xl w-full rounded-lg overflow-hidden shadow-2xl relative my-auto">
-      <button onclick="closeModal()" class="absolute top-4 right-4 text-neutral-500 hover:text-white font-mono text-xl p-2 z-10">&times;</button>
+  <div id="artifactModal" class="fixed inset-0 bg-neutral-900/40 dark:bg-obsidian/90 backdrop-blur-md z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300 p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-neutral-950 border border-neutral-300 dark:border-white/10 max-w-2xl w-full rounded-lg overflow-hidden shadow-2xl relative my-auto">
+      <button onclick="closeModal()" class="absolute top-4 right-4 text-neutral-400 hover:text-neutral-900 dark:hover:text-white font-mono text-xl p-2 z-10">&times;</button>
       <div class="p-6 sm:p-10 space-y-6">
         <div>
           <span id="modalMeta" class="text-[10px] font-mono text-egyptianGold tracking-widest uppercase block">META DATA</span>
-          <h3 id="modalTitle" class="font-serif text-xl sm:text-3xl text-white mt-1">Artifact Title</h3>
+          <h3 id="modalTitle" class="font-serif text-xl sm:text-3xl text-neutral-900 dark:text-white mt-1">Artifact Title</h3>
         </div>
-        <div class="w-full h-[1px] bg-white/10"></div>
+        <div class="w-full h-[1px] bg-neutral-200 dark:bg-white/10"></div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div>
-            <span class="text-[9px] text-neutral-500 tracking-wider uppercase font-semibold block">Historical Function</span>
-            <p id="modalDesc" class="text-xs sm:text-sm text-neutral-400 font-light leading-relaxed mt-2"></p>
+            <span class="text-[9px] text-neutral-400 dark:text-neutral-500 tracking-wider uppercase font-semibold block">Historical Function</span>
+            <p id="modalDesc" class="text-xs sm:text-sm text-neutral-600 dark:text-neutral-400 font-light leading-relaxed mt-2"></p>
           </div>
           <div class="space-y-4">
             <div>
-              <span class="text-[9px] text-neutral-500 tracking-wider uppercase font-semibold block">Origin Century</span>
-              <span id="modalDynasty" class="text-xs sm:text-sm text-white font-serif mt-1 block"></span>
+              <span class="text-[9px] text-neutral-400 dark:text-neutral-500 tracking-wider uppercase font-semibold block">Origin Century</span>
+              <span id="modalDynasty" class="text-xs sm:text-sm text-neutral-900 dark:text-white font-serif mt-1 block"></span>
             </div>
             <div>
-              <span class="text-[9px] text-neutral-500 tracking-wider uppercase font-semibold block">Primary Element</span>
-              <span id="modalElement" class="text-xs sm:text-sm text-white font-serif mt-1 block"></span>
+              <span class="text-[9px] text-neutral-400 dark:text-neutral-500 tracking-wider uppercase font-semibold block">Primary Element</span>
+              <span id="modalElement" class="text-xs sm:text-sm text-neutral-900 dark:text-white font-serif mt-1 block"></span>
             </div>
           </div>
         </div>
@@ -398,15 +413,34 @@
     </div>
   </div>
 
-  <footer class="border-t border-white/5 py-8 text-center text-[10px] sm:text-xs text-neutral-600 tracking-wider px-4">
+  <footer class="border-t border-neutral-300 dark:border-white/5 py-8 text-center text-[10px] sm:text-xs text-neutral-500 dark:text-neutral-600 tracking-wider px-4">
     &copy; 2026 KHEM LABS. ARCHITECTURE OF THE IMMORTALS.
   </footer>
 
   <!-- Core JavaScript Logic -->
   <script>
+    // Theme Switcher Logic (White / Dark Mode)
+    function toggleTheme() {
+      const html = document.documentElement;
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+      updateCanvasColors();
+    }
+
     // Canvas 3D Geometry Visualizer
     const canvas = document.getElementById('sacredGeometry');
     const ctx = canvas.getContext('2d');
+    let nodeColor = '#ffffff';
+
+    function updateCanvasColors() {
+      const isDark = document.documentElement.classList.contains('dark');
+      nodeColor = isDark ? '#ffffff' : '#0b0b0c';
+    }
 
     function resize() {
       const size = canvas.parentElement.clientWidth;
@@ -417,13 +451,20 @@
       ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
     }
     window.addEventListener('resize', resize);
+    
+    // Initialize theme settings and canvas values
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.remove('dark');
+    } else {
+      document.documentElement.classList.add('dark');
+    }
     resize();
+    updateCanvasColors();
 
     let points = [{x: 0, y: -0.7, z: 0}, {x: -0.6, y: 0.4, z: -0.5}, {x: 0.6, y: 0.4, z: -0.5}, {x: 0, y: 0.4, z: 0.7}];
     const edges = [[0, 1], [0, 2], [0, 3], [1, 2], [2, 3], [3, 1]];
     let rotation = {x: 0.3, y: 0.4}, targetRotation = {x: 0.3, y: 0.4};
 
-    // Touch and mouse orientation mapping
     function updateRotation(clientX, clientY) {
       const width = window.innerWidth, height = window.innerHeight;
       targetRotation.y = ((clientX - width / 2) / (width / 2)) * 1.2;
@@ -462,7 +503,7 @@
           ctx.strokeStyle = gradient; ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
         });
         projected.forEach(p => {
-          ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI * 2); ctx.fillStyle = '#ffffff'; ctx.fill();
+          ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI * 2); ctx.fillStyle = nodeColor; ctx.fill();
         });
       }
       requestAnimationFrame(animate);
